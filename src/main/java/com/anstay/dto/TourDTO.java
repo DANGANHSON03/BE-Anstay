@@ -10,7 +10,7 @@ public class TourDTO {
     private String name;
     private String description;
     private BigDecimal price;
-    private LocalDate checkInDate;
+
     private Integer durationDays;
     private BigDecimal discountPercent;
     private LocalDateTime createdAt;
@@ -18,12 +18,11 @@ public class TourDTO {
     private List<TourScheduleDTO> schedules; // 🟢 Danh sách lịch trình
     private List<TourImageDTO> images;
 
-    public TourDTO(Integer id, String name, String description, BigDecimal price, LocalDate checkInDate, Integer durationDays, BigDecimal discountPercent, LocalDateTime createdAt, List<TourScheduleDTO> schedules, List<TourImageDTO> images) {
+    public TourDTO(Integer id, String name, String description, BigDecimal price, Integer durationDays, BigDecimal discountPercent, LocalDateTime createdAt, List<TourScheduleDTO> schedules, List<TourImageDTO> images) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.checkInDate = checkInDate;
         this.durationDays = durationDays;
         this.discountPercent = discountPercent;
         this.createdAt = createdAt;
@@ -63,13 +62,7 @@ public class TourDTO {
         this.price = price;
     }
 
-    public LocalDate getCheckInDate() {
-        return checkInDate;
-    }
 
-    public void setCheckInDate(LocalDate checkInDate) {
-        this.checkInDate = checkInDate;
-    }
 
     public Integer getDurationDays() {
         return durationDays;

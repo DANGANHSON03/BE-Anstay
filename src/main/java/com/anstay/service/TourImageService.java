@@ -5,6 +5,7 @@ import com.anstay.entity.Tour;
 import com.anstay.entity.TourImage;
 import com.anstay.repository.TourImageRepository;
 import com.anstay.repository.TourRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +58,19 @@ public class TourImageService {
     public boolean deleteTourImage(Integer id) {
         if (tourImageRepository.existsById(id)) {
             tourImageRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+    @Transactional
+    public boolean toggleIsFeatured(Integer id) {
+        // Lấy thông tin ảnh theo ID
+        Optional<TourImage> tourImageOpt = tourImageRepository.findById(id);
+        if (tourImageOpt.isPresent()) {
+            TourImage tourImage = tourImageOpt.get();
+            // Đảo ngược trạng thái
+            tourImage.setIsFeatured(!tourImage.getIsFeatured());
+            tourImageRepository.save(tourImage);
             return true;
         }
         return false;

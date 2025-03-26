@@ -5,6 +5,7 @@ import com.anstay.enums.Role;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,12 +33,12 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    private String verificationCode;
-    private java.sql.Timestamp codeExpiresAt;
     private Boolean isVerified = false;
 
-    public User(Integer id, String fullName, String email, String phone, String password, String avatar, String address, Role role, String verificationCode, Timestamp codeExpiresAt, Boolean isVerified) {
+    @Column(name = "date_of_birthday")
+    private LocalDate dateOfBirthday;
+
+    public User(Integer id, String fullName, String email, String phone, String password, String avatar, String address, Role role, Boolean isVerified, LocalDate dateOfBirthday) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -46,9 +47,8 @@ public class User {
         this.avatar = avatar;
         this.address = address;
         this.role = role;
-        this.verificationCode = verificationCode;
-        this.codeExpiresAt = codeExpiresAt;
         this.isVerified = isVerified;
+        this.dateOfBirthday = dateOfBirthday;
     }
 
     public User(UserDTO userDTO) {
@@ -125,27 +125,19 @@ public class User {
         this.role = role;
     }
 
-    public String getVerificationCode() {
-        return verificationCode;
-    }
-
-    public void setVerificationCode(String verificationCode) {
-        this.verificationCode = verificationCode;
-    }
-
-    public Timestamp getCodeExpiresAt() {
-        return codeExpiresAt;
-    }
-
-    public void setCodeExpiresAt(Timestamp codeExpiresAt) {
-        this.codeExpiresAt = codeExpiresAt;
-    }
-
     public Boolean getVerified() {
         return isVerified;
     }
 
     public void setVerified(Boolean verified) {
         isVerified = verified;
+    }
+
+    public LocalDate getDateOfBirthday() {
+        return dateOfBirthday;
+    }
+
+    public void setDateOfBirthday(LocalDate dateOfBirthday) {
+        this.dateOfBirthday = dateOfBirthday;
     }
 }

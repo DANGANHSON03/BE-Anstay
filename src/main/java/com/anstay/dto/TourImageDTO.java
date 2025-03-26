@@ -9,11 +9,10 @@ public class TourImageDTO {
     public TourImageDTO(Integer id, Integer tourId, String imageUrl, Boolean isFeatured) {
         this.id = id;
         this.tourId = tourId;
-
         this.imageUrl = imageUrl;
         this.isFeatured = isFeatured;
     }
-
+    public TourImageDTO() {}
     public TourImageDTO(Integer id, Integer id1, String imageUrl, Object featured) {
         this.id = id;
         this.tourId = id1;

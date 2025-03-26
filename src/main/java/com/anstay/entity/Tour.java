@@ -22,8 +22,6 @@ public class Tour {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Column(nullable = false)
-    private LocalDate checkInDate;
 
     @Column(nullable = false)
     private Integer durationDays;
@@ -67,13 +65,7 @@ public class Tour {
         this.price = price;
     }
 
-    public LocalDate getCheckInDate() {
-        return checkInDate;
-    }
 
-    public void setCheckInDate(LocalDate checkInDate) {
-        this.checkInDate = checkInDate;
-    }
 
     public Integer getDurationDays() {
         return durationDays;

@@ -38,4 +38,9 @@ public class TourImageController {
         boolean isDeleted = tourImageService.deleteTourImage(id);
         return isDeleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
+    @PatchMapping("/{id}/isFeatured")
+    public ResponseEntity<Void> toggleIsFeatured(@PathVariable Integer id) {
+        boolean isUpdated = tourImageService.toggleIsFeatured(id);
+        return isUpdated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
 }
