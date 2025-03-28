@@ -8,6 +8,7 @@ import com.anstay.entity.TourScheduleDetail;
 import com.anstay.repository.TourRepository;
 import com.anstay.repository.TourScheduleDetailRepository;
 import com.anstay.repository.TourScheduleRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -89,6 +90,7 @@ public class TourScheduleService {
     }
 
     // 🟢 Xóa lịch trình theo ID (xóa luôn các chi tiết)
+    @Transactional
     public boolean deleteTourSchedule(Integer id) {
         if (tourScheduleRepository.existsById(id)) {
             tourScheduleDetailRepository.deleteByScheduleId(id); // Xóa các chi tiết lịch trình
@@ -97,4 +99,36 @@ public class TourScheduleService {
         }
         return false;
     }
+
+    public TourScheduleDTO updateTourSchedule(Integer id, TourScheduleDTO dto) {
+        Optional<TourSchedule> optionalSchedule = tourScheduleRepository.findById(id);
+        if (optionalSchedule.isPresent()) {
+            TourSchedule schedule = optionalSchedule.get();
+
+            // ❌ Không thay đổi ID
+            // schedule.setId(dto.getTourId());
+
+            // ✅ Nếu muốn thay đổi `tourId`, cần lấy entity `Tour` từ DB
+            Tour tour = tourRepository.findById(dto.getTourId())
+                    .orElseThrow(() -> new RuntimeException("Tour not found"));
+            schedule.setTour(tour);
+
+            schedule.setDayNumber(dto.getDayNumber());
+            schedule.setTitle(dto.getTitle());
+            schedule.setDescription(dto.getDescription());
+
+            TourSchedule updatedSchedule = tourScheduleRepository.save(schedule);
+            return new TourScheduleDTO(
+                    updatedSchedule.getId(),
+                    updatedSchedule.getTour().getId(),
+                    updatedSchedule.getDayNumber(),
+                    updatedSchedule.getTitle(),
+                    updatedSchedule.getDescription(),
+                    null
+            );
+        }
+        return null;
+    }
+
+
 }

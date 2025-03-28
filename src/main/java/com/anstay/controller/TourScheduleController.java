@@ -38,4 +38,10 @@ public class TourScheduleController {
         boolean isDeleted = tourScheduleService.deleteTourSchedule(id);
         return isDeleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TourScheduleDTO> updateTourSchedule(@PathVariable Integer id, @RequestBody TourScheduleDTO dto) {
+        TourScheduleDTO updatedSchedule = tourScheduleService.updateTourSchedule(id, dto);
+        return updatedSchedule != null ? ResponseEntity.ok(updatedSchedule) : ResponseEntity.notFound().build();
+    }
 }

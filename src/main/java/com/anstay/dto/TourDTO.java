@@ -1,5 +1,8 @@
 package com.anstay.dto;
 
+import com.anstay.entity.Tour;
+import com.anstay.enums.Area;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,7 +21,23 @@ public class TourDTO {
     private List<TourScheduleDTO> schedules; // 🟢 Danh sách lịch trình
     private List<TourImageDTO> images;
 
-    public TourDTO(Integer id, String name, String description, BigDecimal price, Integer durationDays, BigDecimal discountPercent, LocalDateTime createdAt, List<TourScheduleDTO> schedules, List<TourImageDTO> images) {
+    private Area area;
+
+
+    public TourDTO() {
+    }
+
+    public TourDTO(Tour tour) {
+        this.id = tour.getId();
+        this.name = tour.getName();
+        this.description = tour.getDescription();
+        this.price = tour.getPrice();
+        this.durationDays = tour.getDurationDays();
+        this.discountPercent = tour.getDiscountPercent();
+        this.createdAt = tour.getCreatedAt();
+    }
+
+    public TourDTO(Integer id, String name, String description, BigDecimal price, Integer durationDays, BigDecimal discountPercent, LocalDateTime createdAt, List<TourScheduleDTO> schedules, List<TourImageDTO> images, Area area) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -28,6 +47,7 @@ public class TourDTO {
         this.createdAt = createdAt;
         this.schedules = schedules;
         this.images = images;
+        this.area = area;
     }
 
     public Integer getId() {
@@ -61,8 +81,6 @@ public class TourDTO {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
-
-
 
     public Integer getDurationDays() {
         return durationDays;
@@ -102,5 +120,13 @@ public class TourDTO {
 
     public void setImages(List<TourImageDTO> images) {
         this.images = images;
+    }
+
+    public Area getArea() {
+        return area;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
     }
 }

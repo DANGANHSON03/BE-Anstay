@@ -1,6 +1,7 @@
 package com.anstay.entity;
 
 import com.anstay.dto.UserDTO;
+import com.anstay.enums.Gender;
 import com.anstay.enums.Role;
 import jakarta.persistence.*;
 
@@ -35,10 +36,14 @@ public class User {
     private Role role;
     private Boolean isVerified = false;
 
-    @Column(name = "date_of_birthday")
-    private LocalDate dateOfBirthday;
 
-    public User(Integer id, String fullName, String email, String phone, String password, String avatar, String address, Role role, Boolean isVerified, LocalDate dateOfBirthday) {
+    @Column(name = "dob")
+    private LocalDate dob;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender= Gender.OTHER;
+
+    public User(Integer id, String fullName, String email, String phone, String password, String avatar, String address, Role role, Boolean isVerified, LocalDate dob, Gender gender) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -48,7 +53,8 @@ public class User {
         this.address = address;
         this.role = role;
         this.isVerified = isVerified;
-        this.dateOfBirthday = dateOfBirthday;
+        this.dob = dob;
+        this.gender = gender;
     }
 
     public User(UserDTO userDTO) {
@@ -59,7 +65,6 @@ public class User {
     }
 
 // Getters and Setters
-
 
     public Integer getId() {
         return id;
@@ -133,11 +138,19 @@ public class User {
         isVerified = verified;
     }
 
-    public LocalDate getDateOfBirthday() {
-        return dateOfBirthday;
+    public LocalDate getDob() {
+        return dob;
     }
 
-    public void setDateOfBirthday(LocalDate dateOfBirthday) {
-        this.dateOfBirthday = dateOfBirthday;
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 }

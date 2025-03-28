@@ -19,7 +19,7 @@ public class TourSchedule {
     @Column(name = "title", nullable = false, length = 255)
     private String title;
 
-    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "description", nullable = true, columnDefinition = "TEXT")
     private String description;
 
     public Integer getId() {

@@ -9,16 +9,16 @@ public class ApartmentOwner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String name;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = true, length = 20)
     private String phone;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String address;
 
     public ApartmentOwner() {}

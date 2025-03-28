@@ -25,11 +25,15 @@ public class TourController {
     // 🟢 API lấy thông tin 1 Tour theo ID
     @GetMapping("/{id}")
     public ResponseEntity<TourDTO> getTourById(@PathVariable Integer id) {
+        System.out.println("🔍 API được gọi với id: " + id);
         TourDTO tourDTO = tourService.getTourById(id);
+        System.out.println("🔍 Tour tìm thấy: " + (tourDTO != null ? tourDTO.toString() : "null"));
+
         if (tourDTO != null) {
             return ResponseEntity.ok(tourDTO);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 }

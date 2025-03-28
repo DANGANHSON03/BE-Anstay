@@ -64,7 +64,8 @@ public class TourService {
                     tour.getDiscountPercent(),
                     tour.getCreatedAt(),
                     schedules, // 🟢 Gán lịch trình vào DTO
-                    images     // 🟢 Gán hình ảnh vào DTO
+                    images,
+                    tour.getArea() // 🟢 Gán hình ảnh vào DTO
             );
         }).collect(Collectors.toList());
     }
@@ -80,6 +81,6 @@ public class TourService {
     }
 
     public TourDTO getTourById(Integer id) {
-     return null;
+        return tourRepository.findById(id).map(TourDTO::new).orElse(null);
     }
 }

@@ -1,5 +1,6 @@
 package com.anstay.entity;
 
+import com.anstay.enums.Area;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -31,6 +32,10 @@ public class Tour {
 
     @Column(nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "area" ,nullable = false)
+    private Area area;
 
 
     public Integer getId() {
@@ -65,8 +70,6 @@ public class Tour {
         this.price = price;
     }
 
-
-
     public Integer getDurationDays() {
         return durationDays;
     }
@@ -89,5 +92,13 @@ public class Tour {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Area getArea() {
+        return area;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
     }
 }
