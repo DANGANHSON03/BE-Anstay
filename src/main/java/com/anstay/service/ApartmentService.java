@@ -6,6 +6,7 @@ import com.anstay.dto.ApartmentOwnerDTO;
 import com.anstay.entity.Apartment;
 import com.anstay.entity.ApartmentImage;
 import com.anstay.entity.ApartmentOwner;
+import com.anstay.enums.Area;
 import com.anstay.repository.ApartmentOwnerRepository;
 import com.anstay.repository.ApartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,5 +133,10 @@ public class ApartmentService {
         );
     }
 
-
+    public List<ApartmentDTO> getApartmentsByArea(Area area) {
+        List<Apartment> apartments = apartmentRepository.findByArea(area);
+        return apartments.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
 }
