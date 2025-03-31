@@ -22,6 +22,8 @@ public class TourDTO {
     private List<TourImageDTO> images;
 
     private Area area;
+    private String transportation;
+    private String hotel;
 
 
     public TourDTO() {
@@ -37,7 +39,7 @@ public class TourDTO {
         this.createdAt = tour.getCreatedAt();
     }
 
-    public TourDTO(Integer id, String name, String description, BigDecimal price, Integer durationDays, BigDecimal discountPercent, LocalDateTime createdAt, List<TourScheduleDTO> schedules, List<TourImageDTO> images, Area area) {
+    public TourDTO(Integer id, String name, String description, BigDecimal price, Integer durationDays, BigDecimal discountPercent, LocalDateTime createdAt, List<TourScheduleDTO> schedules, List<TourImageDTO> images, Area area, String transportation, String hotel) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -48,6 +50,8 @@ public class TourDTO {
         this.schedules = schedules;
         this.images = images;
         this.area = area;
+        this.transportation = transportation;
+        this.hotel = hotel;
     }
 
     public Integer getId() {
@@ -128,5 +132,21 @@ public class TourDTO {
 
     public void setArea(Area area) {
         this.area = area;
+    }
+
+    public String getTransportation() {
+        return transportation;
+    }
+
+    public void setTransportation(String transportation) {
+        this.transportation = transportation;
+    }
+
+    public String getHotel() {
+        return hotel;
+    }
+
+    public void setHotel(String hotel) {
+        this.hotel = hotel;
     }
 }

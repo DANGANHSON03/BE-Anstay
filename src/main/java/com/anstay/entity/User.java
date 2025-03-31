@@ -66,6 +66,7 @@ public class User {
 
 // Getters and Setters
 
+
     public Integer getId() {
         return id;
     }

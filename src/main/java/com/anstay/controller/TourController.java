@@ -1,11 +1,14 @@
 package com.anstay.controller;
 
 import com.anstay.dto.TourDTO;
+import com.anstay.entity.Tour;
+import com.anstay.enums.Area;
 import com.anstay.service.TourService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -36,4 +39,14 @@ public class TourController {
         }
     }
 
+
+    @GetMapping("/by-area")
+    public ResponseEntity<List<TourDTO>> getToursByArea(@RequestParam Area area) {
+        try {
+            List<TourDTO> tours = tourService.getAllToursByArea(area);
+            return ResponseEntity.ok(tours);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Collections.emptyList());
+        }
+    }
 }

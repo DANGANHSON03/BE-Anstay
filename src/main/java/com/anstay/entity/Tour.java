@@ -37,6 +37,11 @@ public class Tour {
     @Column(name = "area" ,nullable = false)
     private Area area;
 
+    @Column(nullable = true)
+    private String transportation;
+
+    @Column(nullable = true)
+    private String hotel;
 
     public Integer getId() {
         return id;
@@ -100,5 +105,21 @@ public class Tour {
 
     public void setArea(Area area) {
         this.area = area;
+    }
+
+    public String getTransportation() {
+        return transportation;
+    }
+
+    public void setTransportation(String transportation) {
+        this.transportation = transportation;
+    }
+
+    public String getHotel() {
+        return hotel;
+    }
+
+    public void setHotel(String hotel) {
+        this.hotel = hotel;
     }
 }

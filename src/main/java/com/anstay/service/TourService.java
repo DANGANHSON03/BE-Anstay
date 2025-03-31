@@ -5,6 +5,7 @@ import com.anstay.dto.TourImageDTO;
 import com.anstay.dto.TourScheduleDTO;
 import com.anstay.dto.TourScheduleDetailDTO;
 import com.anstay.entity.Tour;
+import com.anstay.enums.Area;
 import com.anstay.repository.TourRepository;
 import com.anstay.repository.TourScheduleRepository;
 import com.anstay.repository.TourImageRepository;
@@ -65,7 +66,9 @@ public class TourService {
                     tour.getCreatedAt(),
                     schedules, // 🟢 Gán lịch trình vào DTO
                     images,
-                    tour.getArea() // 🟢 Gán hình ảnh vào DTO
+                    tour.getArea(),
+                    tour.getTransportation(),
+                    tour.getHotel()
             );
         }).collect(Collectors.toList());
     }
@@ -82,5 +85,44 @@ public class TourService {
 
     public TourDTO getTourById(Integer id) {
         return tourRepository.findById(id).map(TourDTO::new).orElse(null);
+    }
+
+    public List<TourDTO> getAllToursByArea(Area area) {
+        List<Tour> tours = tourRepository.findByArea(area);
+
+        return tours.stream().map(tour -> {
+            List<TourScheduleDTO> schedules = tourScheduleRepository.findByTourId(tour.getId()).stream()
+                    .map(schedule -> new TourScheduleDTO(
+                            schedule.getId(),
+                            schedule.getTour().getId(),
+                            schedule.getDayNumber(),
+                            schedule.getTitle(),
+                            schedule.getDescription(),
+                            getScheduleDetails(schedule.getId())
+                    )).collect(Collectors.toList());
+
+            List<TourImageDTO> images = tourImageRepository.findByTourId(tour.getId()).stream()
+                    .map(image -> new TourImageDTO(
+                            image.getId(),
+                            image.getTour().getId(),
+                            image.getImageUrl(),
+                            image.isFeatured()
+                    )).collect(Collectors.toList());
+
+            return new TourDTO(
+                    tour.getId(),
+                    tour.getName(),
+                    tour.getDescription(),
+                    tour.getPrice(),
+                    tour.getDurationDays(),
+                    tour.getDiscountPercent(),
+                    tour.getCreatedAt(),
+                    schedules,
+                    images,
+                    tour.getArea(),
+                    tour.getTransportation(),
+                    tour.getHotel()
+            );
+        }).collect(Collectors.toList());
     }
 }

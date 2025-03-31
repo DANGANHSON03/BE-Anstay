@@ -78,7 +78,9 @@ public class TourCrudService {
                 tour.getCreatedAt(),
                 null, // Không cần lịch trình
                 null,
-                tour.getArea()
+                tour.getArea(),
+                tour.getTransportation(),
+                tour.getHotel()
         );
     }
 }
