@@ -84,9 +84,43 @@ public class TourService {
     }
 
     public TourDTO getTourById(Integer id) {
-        return tourRepository.findById(id).map(TourDTO::new).orElse(null);
-    }
+        return tourRepository.findById(id).map(tour -> {
+            // Get schedules with details
+            List<TourScheduleDTO> schedules = tourScheduleRepository.findByTourId(tour.getId()).stream()
+                    .map(schedule -> new TourScheduleDTO(
+                            schedule.getId(),
+                            schedule.getTour().getId(),
+                            schedule.getDayNumber(),
+                            schedule.getTitle(),
+                            schedule.getDescription(),
+                            getScheduleDetails(schedule.getId())
+                    )).collect(Collectors.toList());
 
+            // Get images
+            List<TourImageDTO> images = tourImageRepository.findByTourId(tour.getId()).stream()
+                    .map(image -> new TourImageDTO(
+                            image.getId(),
+                            image.getTour().getId(),
+                            image.getImageUrl(),
+                            image.isFeatured()
+                    )).collect(Collectors.toList());
+
+            return new TourDTO(
+                    tour.getId(),
+                    tour.getName(),
+                    tour.getDescription(),
+                    tour.getPrice(),
+                    tour.getDurationDays(),
+                    tour.getDiscountPercent(),
+                    tour.getCreatedAt(),
+                    schedules,
+                    images,
+                    tour.getArea(),
+                    tour.getTransportation(),
+                    tour.getHotel()
+            );
+        }).orElse(null);
+    }
     public List<TourDTO> getAllToursByArea(Area area) {
         List<Tour> tours = tourRepository.findByArea(area);
 

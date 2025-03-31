@@ -27,18 +27,22 @@ public class TourController {
 
     // 🟢 API lấy thông tin 1 Tour theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<TourDTO> getTourById(@PathVariable Integer id) {
+    public ResponseEntity<List<TourDTO>> getTourById(@PathVariable Integer id) {
         System.out.println("🔍 API được gọi với id: " + id);
-        TourDTO tourDTO = tourService.getTourById(id);
-        System.out.println("🔍 Tour tìm thấy: " + (tourDTO != null ? tourDTO.toString() : "null"));
-
-        if (tourDTO != null) {
-            return ResponseEntity.ok(tourDTO);
-        } else {
-            return ResponseEntity.notFound().build();
+        try {
+            TourDTO tour = tourService.getTourById(id);
+            if (tour == null) {
+                System.out.println("❌ Không tìm thấy tour với id: " + id);
+                return ResponseEntity.ok(Collections.emptyList());
+            }
+            List<TourDTO> tours = Collections.singletonList(tour);
+            System.out.println("✅ Tour tìm thấy: " + tours);
+            return ResponseEntity.ok(tours);
+        } catch (Exception e) {
+            System.out.println("❌ Lỗi khi tìm tour: " + e.getMessage());
+            return ResponseEntity.ok(Collections.emptyList());
         }
     }
-
 
     @GetMapping("/by-area")
     public ResponseEntity<List<TourDTO>> getToursByArea(@RequestParam Area area) {
