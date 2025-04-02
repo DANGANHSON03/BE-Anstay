@@ -34,11 +34,12 @@ public class TourCrudService {
         tour.setName(tourDTO.getName());
         tour.setDescription(tourDTO.getDescription());
         tour.setPrice(tourDTO.getPrice());
-
         tour.setDurationDays(tourDTO.getDurationDays());
         tour.setDiscountPercent(tourDTO.getDiscountPercent());
         tour.setCreatedAt(tourDTO.getCreatedAt());
         tour.setArea(tourDTO.getArea());
+        tour.setTransportation(tourDTO.getTransportation());
+        tour.setHotel(tourDTO.getHotel());
         tour = tourCrudRepository.save(tour);
         return convertToDTO(tour);
     }
@@ -51,10 +52,11 @@ public class TourCrudService {
             tour.setName(tourDTO.getName());
             tour.setDescription(tourDTO.getDescription());
             tour.setPrice(tourDTO.getPrice());
-
             tour.setDurationDays(tourDTO.getDurationDays());
             tour.setDiscountPercent(tourDTO.getDiscountPercent());
             tour.setArea(tourDTO.getArea());
+            tour.setTransportation(tourDTO.getTransportation());
+            tour.setHotel(tourDTO.getHotel());
             tour = tourCrudRepository.save(tour);
             return convertToDTO(tour);
         }
