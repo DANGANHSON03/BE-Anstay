@@ -84,7 +84,7 @@ public class ContactController {
             );
 
             emailService.sendEmailWithTemplate(
-                    "anhson22062003xxx@gmail.com",  // Email admin từ application.properties
+                    "anstayresidence@gmail.com",  // Email admin từ application.properties
                     "Thông báo: Có liên hệ mới từ " + contact.getName(),
                     "Admin",
                     emailContent

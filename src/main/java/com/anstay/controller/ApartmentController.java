@@ -144,8 +144,6 @@ public class ApartmentController {
                     numberOfNights,
                     emailRequest.getAdults(),
                     emailRequest.getChildren(),
-                    formatPrice(emailRequest.getPricePerNight()),
-                    formatPrice(emailRequest.getTotalPrice()),
                     emailRequest.getMessage()
             );
 
@@ -153,6 +151,8 @@ public class ApartmentController {
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <title>Anstay - Xác nhận yêu cầu đặt phòng</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; background: #f9f9f9; border-radius: 10px; text-align: center; }
@@ -179,7 +179,7 @@ public class ApartmentController {
 
             // Send email to admin
             emailService.sendEmailWithTemplate(
-                    "anhson22062003xxx@gmail.com",
+                    "anstayresidence@gmail.com",
                     "Thông báo: Yêu cầu đặt căn hộ mới - " + apartment.getName(),
                     "Admin",
                     adminEmailContent

@@ -86,7 +86,7 @@ public class TourController {
 
             // Send email notification
             emailService.sendEmailWithTemplate(
-                    "anhson22062003xxx@gmail.com",
+                    "anstayresidence@gmail.com",
                     "Thông báo: Có liên hệ mới về tour " + tour.getName(),
                     "Admin",
                     String.format("""
