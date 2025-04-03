@@ -17,7 +17,7 @@ public class Tour {
     @Column(nullable = false, length = 255)
     private String name;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = true)
     private String description;
 
     @Column(nullable = false, precision = 10, scale = 2)
