@@ -15,7 +15,7 @@ public class ApartmentBookingController {
     @Autowired
     private ApartmentBookingService bookingService;
 
-    // Lấy tất cả booking
+    // Lấy tất cả bookingđbgdbgbg
     @GetMapping
     public ResponseEntity<List<ApartmentBookingDTO>> getAllBookings() {
         return ResponseEntity.ok(bookingService.getAllBookings());
