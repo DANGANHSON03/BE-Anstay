@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface ApartmentRepository extends JpaRepository<Apartment,Integer> {
     List<Apartment> findByArea(Area area);
+    List<Apartment> findByNameContainingIgnoreCase(String name);
 
 }

@@ -139,4 +139,10 @@ public class ApartmentService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+    public List<ApartmentDTO> searchApartmentsByName(String name) {
+        List<Apartment> apartments = apartmentRepository.findByNameContainingIgnoreCase(name);
+        return apartments.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+
 }

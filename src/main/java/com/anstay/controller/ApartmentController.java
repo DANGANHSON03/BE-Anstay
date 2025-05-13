@@ -47,6 +47,11 @@ public class ApartmentController {
         ApartmentDTO apartment = apartmentService.getApartmentById(id);
         return apartment != null ? ResponseEntity.ok(apartment) : ResponseEntity.notFound().build();
     }
+    @GetMapping("/search")
+    public ResponseEntity<List<ApartmentDTO>> searchApartmentsByName(@RequestParam String name) {
+        List<ApartmentDTO> result = apartmentService.searchApartmentsByName(name);
+        return ResponseEntity.ok(result);
+    }
 
     // Tạo mới căn hộ
     @PostMapping
