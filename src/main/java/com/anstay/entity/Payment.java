@@ -21,8 +21,9 @@ public class Payment {
     @Column(nullable = false)
     private Integer bookingId;
 
+    // Cho phép nullable để lưu khách vãng lai
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
     @Column(nullable = false)
@@ -42,6 +43,43 @@ public class Payment {
     @Column(updatable = false, nullable = false)
     private Date createdAt = new Date();
 
+    // ========== Thông tin khách vãng lai (guest) ==========
+    @Column(name = "guest_name")
+    private String guestName;
+
+    @Column(name = "guest_phone")
+    private String guestPhone;
+
+    @Column(name = "guest_email")
+    private String guestEmail;
+
+    @Column(name = "guest_identity_number")
+    private String guestIdentityNumber;
+
+    @Column(name = "guest_birthday")
+    private Date guestBirthday; // hoặc java.time.LocalDate nếu bạn dùng Java 8+
+
+    @Column(name = "guest_nationality")
+    private String guestNationality;
+
+
+    public Payment() {
+        this.id = id;
+        this.bookingType = bookingType;
+        this.bookingId = bookingId;
+        this.user = user;
+        this.amount = amount;
+        this.paymentMethod = paymentMethod;
+        this.transactionId = transactionId;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.guestName = guestName;
+        this.guestPhone = guestPhone;
+        this.guestEmail = guestEmail;
+        this.guestIdentityNumber = guestIdentityNumber;
+        this.guestBirthday = guestBirthday;
+        this.guestNationality = guestNationality;
+    }
 
     public Integer getId() {
         return id;
@@ -113,5 +151,53 @@ public class Payment {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getGuestName() {
+        return guestName;
+    }
+
+    public void setGuestName(String guestName) {
+        this.guestName = guestName;
+    }
+
+    public String getGuestPhone() {
+        return guestPhone;
+    }
+
+    public void setGuestPhone(String guestPhone) {
+        this.guestPhone = guestPhone;
+    }
+
+    public String getGuestEmail() {
+        return guestEmail;
+    }
+
+    public void setGuestEmail(String guestEmail) {
+        this.guestEmail = guestEmail;
+    }
+
+    public String getGuestIdentityNumber() {
+        return guestIdentityNumber;
+    }
+
+    public void setGuestIdentityNumber(String guestIdentityNumber) {
+        this.guestIdentityNumber = guestIdentityNumber;
+    }
+
+    public Date getGuestBirthday() {
+        return guestBirthday;
+    }
+
+    public void setGuestBirthday(Date guestBirthday) {
+        this.guestBirthday = guestBirthday;
+    }
+
+    public String getGuestNationality() {
+        return guestNationality;
+    }
+
+    public void setGuestNationality(String guestNationality) {
+        this.guestNationality = guestNationality;
     }
 }

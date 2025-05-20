@@ -16,14 +16,12 @@ public class PaymentController {
     @Autowired
     private PaymentServiceImpl paymentService;
 
-    // 📌 Tạo thanh toán mới
     @PostMapping
     public ResponseEntity<PaymentDTO> createPayment(@RequestBody PaymentDTO paymentDTO) {
         PaymentDTO createdPayment = paymentService.createPayment(paymentDTO);
         return ResponseEntity.ok(createdPayment);
     }
 
-    // 📌 Lấy thông tin thanh toán theo ID
     @GetMapping("/{id}")
     public ResponseEntity<PaymentDTO> getPaymentById(@PathVariable Integer id) {
         PaymentDTO paymentDTO = paymentService.getPaymentById(id);

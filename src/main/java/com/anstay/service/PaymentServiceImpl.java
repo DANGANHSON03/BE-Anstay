@@ -5,7 +5,6 @@ import com.anstay.entity.Payment;
 import com.anstay.entity.User;
 import com.anstay.repository.PaymentRepository;
 import com.anstay.repository.UserRepository;
-import com.anstay.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -25,13 +24,34 @@ public class PaymentServiceImpl implements PaymentService {
         Payment payment = new Payment();
         payment.setBookingType(paymentDTO.getBookingType());
         payment.setBookingId(paymentDTO.getBookingId());
-        User user = userRepository.findById(paymentDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        payment.setUser(user);
         payment.setAmount(paymentDTO.getAmount());
         payment.setPaymentMethod(paymentDTO.getPaymentMethod());
         payment.setTransactionId(paymentDTO.getTransactionId());
         payment.setStatus(paymentDTO.getStatus());
+
+        // Xử lý user thật hoặc khách vãng lai
+        if (paymentDTO.getUserId() != null) {
+            User user = userRepository.findById(paymentDTO.getUserId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            payment.setUser(user);
+
+            // Dữ liệu guest để null
+            payment.setGuestName(null);
+            payment.setGuestPhone(null);
+            payment.setGuestEmail(null);
+            payment.setGuestIdentityNumber(null);
+            payment.setGuestBirthday(null);
+            payment.setGuestNationality(null);
+
+        } else {
+            payment.setUser(null);
+            payment.setGuestName(paymentDTO.getGuestName());
+            payment.setGuestPhone(paymentDTO.getGuestPhone());
+            payment.setGuestEmail(paymentDTO.getGuestEmail());
+            payment.setGuestIdentityNumber(paymentDTO.getGuestIdentityNumber());
+            payment.setGuestBirthday(paymentDTO.getGuestBirthday());
+            payment.setGuestNationality(paymentDTO.getGuestNationality());
+        }
 
         Payment savedPayment = paymentRepository.save(payment);
         return convertToDTO(savedPayment);
@@ -50,17 +70,31 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private PaymentDTO convertToDTO(Payment payment) {
+        Integer userId = null;
+        String userFullName = null;
+
+        if (payment.getUser() != null) {
+            userId = payment.getUser().getId();
+            userFullName = payment.getUser().getFullName();
+        }
+
         return new PaymentDTO(
                 payment.getId(),
                 payment.getBookingType(),
                 payment.getBookingId(),
-                payment.getUser().getId(),  // Get user ID from User entity
-                payment.getUser().getFullName(),  // Get user full name
+                userId,
+                userFullName,
                 payment.getAmount(),
                 payment.getPaymentMethod(),
                 payment.getTransactionId(),
                 payment.getStatus(),
-                payment.getCreatedAt()
+                payment.getCreatedAt(),
+                payment.getGuestName(),
+                payment.getGuestPhone(),
+                payment.getGuestEmail(),
+                payment.getGuestIdentityNumber(),
+                payment.getGuestBirthday(),
+                payment.getGuestNationality()
         );
     }
 }

@@ -7,7 +7,7 @@ import com.anstay.enums.PaymentStatus;
 import java.util.Date;
 
 public class PaymentDTO {
-    private Integer id; // ✅ Bổ sung ID
+    private Integer id;
     private BookingType bookingType;
     private Integer bookingId;
     private Integer userId;
@@ -18,7 +18,35 @@ public class PaymentDTO {
     private PaymentStatus status;
     private Date createdAt;
 
-    public PaymentDTO(Integer id, BookingType bookingType, Integer bookingId, Integer userId, String userFullName, Double amount, PaymentMethod paymentMethod, String transactionId, PaymentStatus status, Date createdAt) {
+    // ====== Các trường khách vãng lai (guest) ======
+    private String guestName;
+    private String guestPhone;
+    private String guestEmail;
+    private String guestIdentityNumber;
+    private Date guestBirthday;
+    private String guestNationality;
+
+    // ======= Constructor có đủ trường (bạn tự bổ sung thêm nếu cần) =======
+    public PaymentDTO() {}
+
+    public PaymentDTO(
+            Integer id,
+            BookingType bookingType,
+            Integer bookingId,
+            Integer userId,
+            String userFullName,
+            Double amount,
+            PaymentMethod paymentMethod,
+            String transactionId,
+            PaymentStatus status,
+            Date createdAt,
+            String guestName,
+            String guestPhone,
+            String guestEmail,
+            String guestIdentityNumber,
+            Date guestBirthday,
+            String guestNationality
+    ) {
         this.id = id;
         this.bookingType = bookingType;
         this.bookingId = bookingId;
@@ -29,6 +57,12 @@ public class PaymentDTO {
         this.transactionId = transactionId;
         this.status = status;
         this.createdAt = createdAt;
+        this.guestName = guestName;
+        this.guestPhone = guestPhone;
+        this.guestEmail = guestEmail;
+        this.guestIdentityNumber = guestIdentityNumber;
+        this.guestBirthday = guestBirthday;
+        this.guestNationality = guestNationality;
     }
 
     public Integer getId() {
@@ -109,5 +143,53 @@ public class PaymentDTO {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getGuestName() {
+        return guestName;
+    }
+
+    public void setGuestName(String guestName) {
+        this.guestName = guestName;
+    }
+
+    public String getGuestPhone() {
+        return guestPhone;
+    }
+
+    public void setGuestPhone(String guestPhone) {
+        this.guestPhone = guestPhone;
+    }
+
+    public String getGuestEmail() {
+        return guestEmail;
+    }
+
+    public void setGuestEmail(String guestEmail) {
+        this.guestEmail = guestEmail;
+    }
+
+    public String getGuestIdentityNumber() {
+        return guestIdentityNumber;
+    }
+
+    public void setGuestIdentityNumber(String guestIdentityNumber) {
+        this.guestIdentityNumber = guestIdentityNumber;
+    }
+
+    public Date getGuestBirthday() {
+        return guestBirthday;
+    }
+
+    public void setGuestBirthday(Date guestBirthday) {
+        this.guestBirthday = guestBirthday;
+    }
+
+    public String getGuestNationality() {
+        return guestNationality;
+    }
+
+    public void setGuestNationality(String guestNationality) {
+        this.guestNationality = guestNationality;
     }
 }

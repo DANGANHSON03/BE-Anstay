@@ -1,7 +1,6 @@
 package com.anstay.dto;
 
 import com.anstay.enums.BookingStatus;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -9,23 +8,36 @@ public class ApartmentBookingDTO {
     private Integer id;
     private Integer userId;
     private Integer apartmentId;
+    private Long roomId;
     private LocalDate checkIn;
     private LocalDate checkOut;
     private BigDecimal totalPrice;
     private BookingStatus status;
+    // Guest info
+    private String guestName;
+    private String guestPhone;
+    private String guestEmail;
+    private String guestIdentityNumber;
+    private LocalDate guestBirthday;
+    private String guestNationality;
+    // Getters, setters, constructors...
 
-    public ApartmentBookingDTO(Integer id, Integer userId, Integer apartmentId, LocalDate checkIn, LocalDate checkOut, BigDecimal totalPrice, BookingStatus status) {
+    public ApartmentBookingDTO(Integer id, Integer userId, Integer apartmentId, Long roomId, LocalDate checkIn, LocalDate checkOut, BigDecimal totalPrice, BookingStatus status, String guestName, String guestPhone, String guestEmail, String guestIdentityNumber, LocalDate guestBirthday, String guestNationality) {
         this.id = id;
         this.userId = userId;
         this.apartmentId = apartmentId;
+        this.roomId = roomId;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
         this.totalPrice = totalPrice;
         this.status = status;
+        this.guestName = guestName;
+        this.guestPhone = guestPhone;
+        this.guestEmail = guestEmail;
+        this.guestIdentityNumber = guestIdentityNumber;
+        this.guestBirthday = guestBirthday;
+        this.guestNationality = guestNationality;
     }
-
-// Getters and Setters
-
 
     public Integer getId() {
         return id;
@@ -49,6 +61,14 @@ public class ApartmentBookingDTO {
 
     public void setApartmentId(Integer apartmentId) {
         this.apartmentId = apartmentId;
+    }
+
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
     }
 
     public LocalDate getCheckIn() {
@@ -81,5 +101,53 @@ public class ApartmentBookingDTO {
 
     public void setStatus(BookingStatus status) {
         this.status = status;
+    }
+
+    public String getGuestName() {
+        return guestName;
+    }
+
+    public void setGuestName(String guestName) {
+        this.guestName = guestName;
+    }
+
+    public String getGuestPhone() {
+        return guestPhone;
+    }
+
+    public void setGuestPhone(String guestPhone) {
+        this.guestPhone = guestPhone;
+    }
+
+    public String getGuestEmail() {
+        return guestEmail;
+    }
+
+    public void setGuestEmail(String guestEmail) {
+        this.guestEmail = guestEmail;
+    }
+
+    public String getGuestIdentityNumber() {
+        return guestIdentityNumber;
+    }
+
+    public void setGuestIdentityNumber(String guestIdentityNumber) {
+        this.guestIdentityNumber = guestIdentityNumber;
+    }
+
+    public LocalDate getGuestBirthday() {
+        return guestBirthday;
+    }
+
+    public void setGuestBirthday(LocalDate guestBirthday) {
+        this.guestBirthday = guestBirthday;
+    }
+
+    public String getGuestNationality() {
+        return guestNationality;
+    }
+
+    public void setGuestNationality(String guestNationality) {
+        this.guestNationality = guestNationality;
     }
 }

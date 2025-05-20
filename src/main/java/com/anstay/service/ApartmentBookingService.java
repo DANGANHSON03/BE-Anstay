@@ -1,87 +1,132 @@
 package com.anstay.service;
 
 import com.anstay.dto.ApartmentBookingDTO;
-import com.anstay.entity.Apartment;
-import com.anstay.entity.ApartmentBooking;
-import com.anstay.entity.User;
+import com.anstay.entity.*;
 import com.anstay.enums.BookingStatus;
-import com.anstay.repository.ApartmentBookingRepository;
-import com.anstay.repository.ApartmentRepository;
-import com.anstay.repository.UserRepository;
+import com.anstay.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 @Service
 public class ApartmentBookingService {
 
-    @Autowired
-    private ApartmentBookingRepository bookingRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ApartmentRepository apartmentRepository;
+    @Autowired private ApartmentBookingRepository bookingRepository;
+    @Autowired private UserRepository userRepository;
+    @Autowired private ApartmentRepository apartmentRepository;
+    @Autowired private RoomRepository roomRepository;
 
     // Lấy tất cả booking
     public List<ApartmentBookingDTO> getAllBookings() {
-        List<ApartmentBooking> bookings = bookingRepository.findAll();
-        return bookings.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return bookingRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     // Lấy booking theo ID
     public ApartmentBookingDTO getBookingById(Integer id) {
-        Optional<ApartmentBooking> booking = bookingRepository.findById(id);
-        return booking.map(this::convertToDTO).orElse(null);
+        return bookingRepository.findById(id).map(this::convertToDTO).orElse(null);
     }
 
-    // Tạo booking mới
+    // Kiểm tra phòng còn trống trong khoảng ngày
+    public boolean isRoomAvailable(Long roomId, LocalDate checkIn, LocalDate checkOut) {
+        List<BookingStatus> statuses = List.of(BookingStatus.HOLD, BookingStatus.CONFIRMED);
+        List<ApartmentBooking> overlap = bookingRepository.findActiveBookingsByRoomAndDateRange(
+                roomId, checkIn, checkOut, statuses
+        );
+        return overlap.isEmpty();
+    }
+
+    // Tạo booking mới (giữ chỗ, HOLD)
     public ApartmentBookingDTO createBooking(ApartmentBookingDTO bookingDTO) {
-        Optional<User> userOpt = userRepository.findById(bookingDTO.getUserId());
-        Optional<Apartment> apartmentOpt = apartmentRepository.findById(bookingDTO.getApartmentId());
-
-        if (userOpt.isPresent() && apartmentOpt.isPresent()) {
-            ApartmentBooking booking = new ApartmentBooking(
-                    userOpt.get(),
-                    apartmentOpt.get(),
-                    bookingDTO.getCheckIn(),
-                    bookingDTO.getCheckOut(),
-                    bookingDTO.getTotalPrice(),
-                    BookingStatus.PENDING
-            );
-
-            ApartmentBooking savedBooking = bookingRepository.save(booking);
-            return convertToDTO(savedBooking);
+        // Bước này FE sẽ gọi luôn khi vào page (auto giữ chỗ)
+        if (bookingDTO.getRoomId() == null || bookingDTO.getApartmentId() == null
+                || bookingDTO.getCheckIn() == null || bookingDTO.getCheckOut() == null) {
+            throw new IllegalArgumentException("Missing room, apartment, check-in or check-out info.");
         }
-        return null;
+        Apartment apartment = apartmentRepository.findById(bookingDTO.getApartmentId()).orElse(null);
+        Room room = roomRepository.findById(bookingDTO.getRoomId()).orElse(null);
+        User user = bookingDTO.getUserId() != null
+                ? userRepository.findById(bookingDTO.getUserId()).orElse(null)
+                : null;
+
+        if (apartment == null || room == null) return null;
+        if (!isRoomAvailable(room.getId(), bookingDTO.getCheckIn(), bookingDTO.getCheckOut())) {
+            throw new IllegalStateException("Room already booked or held for this date range!");
+        }
+
+        ApartmentBooking booking = new ApartmentBooking();
+        booking.setUser(user);
+        booking.setApartment(apartment);
+        booking.setRoom(room);
+        booking.setCheckIn(bookingDTO.getCheckIn());
+        booking.setCheckOut(bookingDTO.getCheckOut());
+        booking.setTotalPrice(bookingDTO.getTotalPrice());
+        booking.setStatus(BookingStatus.HOLD); // Luôn giữ HOLD khi mới tạo
+
+        // Guest info
+        booking.setGuestName(bookingDTO.getGuestName());
+        booking.setGuestPhone(bookingDTO.getGuestPhone());
+        booking.setGuestEmail(bookingDTO.getGuestEmail());
+        booking.setGuestIdentityNumber(bookingDTO.getGuestIdentityNumber());
+        booking.setGuestBirthday(bookingDTO.getGuestBirthday());
+        booking.setGuestNationality(bookingDTO.getGuestNationality());
+
+        ApartmentBooking saved = bookingRepository.save(booking);
+        return convertToDTO(saved);
     }
 
-    // Cập nhật booking
-    public ApartmentBookingDTO updateBooking(Integer id, ApartmentBookingDTO bookingDTO) {
+    public List<ApartmentBookingDTO> getBookingsByUserId(Integer userId) {
+        return bookingRepository.findByUserId(userId).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ApartmentBookingDTO> getBookingsByRoomId(Long roomId) {
+        return bookingRepository.findByRoomId(roomId).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ApartmentBookingDTO> getBookingsByStatus(String status) {
+        return bookingRepository.findByStatus(BookingStatus.valueOf(status)).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+    // Cập nhật thông tin booking (nâng cấp lên CONFIRMED, hoặc update info)
+    public ApartmentBookingDTO updateBooking(Integer id, ApartmentBookingDTO dto) {
         Optional<ApartmentBooking> bookingOpt = bookingRepository.findById(id);
-        if (bookingOpt.isPresent()) {
-            ApartmentBooking booking = bookingOpt.get();
+        if (bookingOpt.isEmpty()) return null;
+        ApartmentBooking booking = bookingOpt.get();
 
-            Optional<User> userOpt = userRepository.findById(bookingDTO.getUserId());
-            Optional<Apartment> apartmentOpt = apartmentRepository.findById(bookingDTO.getApartmentId());
-
-            if (userOpt.isPresent() && apartmentOpt.isPresent()) {
-                booking.setUser(userOpt.get());
-                booking.setApartment(apartmentOpt.get());
-                booking.setCheckIn(bookingDTO.getCheckIn());
-                booking.setCheckOut(bookingDTO.getCheckOut());
-                booking.setTotalPrice(bookingDTO.getTotalPrice());
-                booking.setStatus(bookingDTO.getStatus());
-
-                ApartmentBooking updatedBooking = bookingRepository.save(booking);
-                return convertToDTO(updatedBooking);
-            }
+        // Update các trường (trừ createdAt, id)
+        if (dto.getUserId() != null) {
+            User user = userRepository.findById(dto.getUserId()).orElse(null);
+            booking.setUser(user);
         }
-        return null;
+        if (dto.getApartmentId() != null) {
+            Apartment apartment = apartmentRepository.findById(dto.getApartmentId()).orElse(null);
+            booking.setApartment(apartment);
+        }
+        if (dto.getRoomId() != null) {
+            Room room = roomRepository.findById(dto.getRoomId()).orElse(null);
+            booking.setRoom(room);
+        }
+        if (dto.getCheckIn() != null) booking.setCheckIn(dto.getCheckIn());
+        if (dto.getCheckOut() != null) booking.setCheckOut(dto.getCheckOut());
+        if (dto.getTotalPrice() != null) booking.setTotalPrice(dto.getTotalPrice());
+        if (dto.getStatus() != null) booking.setStatus(dto.getStatus());
+
+        booking.setGuestName(dto.getGuestName());
+        booking.setGuestPhone(dto.getGuestPhone());
+        booking.setGuestEmail(dto.getGuestEmail());
+        booking.setGuestIdentityNumber(dto.getGuestIdentityNumber());
+        booking.setGuestBirthday(dto.getGuestBirthday());
+        booking.setGuestNationality(dto.getGuestNationality());
+
+        return convertToDTO(bookingRepository.save(booking));
     }
 
     // Xóa booking
@@ -93,16 +138,23 @@ public class ApartmentBookingService {
         return false;
     }
 
-    // Chuyển đổi entity -> DTO
+    // Chuyển entity sang DTO
     private ApartmentBookingDTO convertToDTO(ApartmentBooking booking) {
         return new ApartmentBookingDTO(
                 booking.getId(),
-                booking.getUser().getId(),
+                booking.getUser() != null ? booking.getUser().getId() : null,
                 booking.getApartment().getId(),
+                booking.getRoom().getId(),
                 booking.getCheckIn(),
                 booking.getCheckOut(),
                 booking.getTotalPrice(),
-                booking.getStatus()
+                booking.getStatus(),
+                booking.getGuestName(),
+                booking.getGuestPhone(),
+                booking.getGuestEmail(),
+                booking.getGuestIdentityNumber(),
+                booking.getGuestBirthday(),
+                booking.getGuestNationality()
         );
     }
 }
