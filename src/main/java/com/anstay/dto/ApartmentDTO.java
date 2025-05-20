@@ -18,14 +18,17 @@ public class ApartmentDTO {
     private String description;
     private int maxAdults;
     private int maxChildren;
-    private int numRooms;
+    private String numRooms;
     private AptStatus status;
     private List<ApartmentOwnerDTO> owners;
     private List<ApartmentImageDTO> images;
     private Area area;
+    private Integer max_bed;
+    private float acreage;
+    private String name_apartment;
 
 
-    public ApartmentDTO(Integer id, String name, String location, Integer ownerId, BigDecimal pricePerDay, BigDecimal pricePerMonth, BigDecimal discountPercent, String description, int maxAdults, int maxChildren, int numRooms, AptStatus status, List<ApartmentOwnerDTO> owners, List<ApartmentImageDTO> images, Area area) {
+    public ApartmentDTO(Integer id, String name, String location, Integer ownerId, BigDecimal pricePerDay, BigDecimal pricePerMonth, BigDecimal discountPercent, String description, int maxAdults, int maxChildren, String numRooms, AptStatus status, List<ApartmentOwnerDTO> owners, List<ApartmentImageDTO> images, Area area, Integer max_bed, float acreage, String name_apartment) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -41,6 +44,9 @@ public class ApartmentDTO {
         this.owners = owners;
         this.images = images;
         this.area = area;
+        this.max_bed = max_bed;
+        this.acreage = acreage;
+        this.name_apartment = name_apartment;
     }
 
     public Integer getId() {
@@ -123,11 +129,11 @@ public class ApartmentDTO {
         this.maxChildren = maxChildren;
     }
 
-    public int getNumRooms() {
+    public String getNumRooms() {
         return numRooms;
     }
 
-    public void setNumRooms(int numRooms) {
+    public void setNumRooms(String numRooms) {
         this.numRooms = numRooms;
     }
 
@@ -161,5 +167,29 @@ public class ApartmentDTO {
 
     public void setArea(Area area) {
         this.area = area;
+    }
+
+    public Integer getMax_bed() {
+        return max_bed;
+    }
+
+    public void setMax_bed(Integer max_bed) {
+        this.max_bed = max_bed;
+    }
+
+    public float getAcreage() {
+        return acreage;
+    }
+
+    public void setAcreage(float acreage) {
+        this.acreage = acreage;
+    }
+
+    public String getName_apartment() {
+        return name_apartment;
+    }
+
+    public void setName_apartment(String name_apartment) {
+        this.name_apartment = name_apartment;
     }
 }

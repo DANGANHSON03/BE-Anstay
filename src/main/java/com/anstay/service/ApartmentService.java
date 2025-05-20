@@ -52,6 +52,8 @@ public class ApartmentService {
         apartment.setMaxAdults(dto.getMaxAdults());
         apartment.setMaxChildren(dto.getMaxChildren());
         apartment.setNumRooms(dto.getNumRooms());
+        
+
 
         Apartment savedApartment = apartmentRepository.save(apartment);
         return convertToDTO(savedApartment);
@@ -129,7 +131,10 @@ public class ApartmentService {
                 apartment.getStatus(),
                 ownerDTOs,
                 imageDTOS,
-                apartment.getArea()// Thêm danh sách ảnh vào DTO
+                apartment.getArea(),
+                apartment.getMax_bed(),
+                apartment.getAcreage(),
+                apartment.getName_apartment()
         );
     }
 

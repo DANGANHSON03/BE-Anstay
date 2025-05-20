@@ -27,7 +27,7 @@ public class Apartment {
     private String description;
     private int maxAdults;
     private int maxChildren;
-    private int numRooms;
+    private String numRooms;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -40,9 +40,13 @@ public class Apartment {
     @Column(name = "area" ,nullable = false)
     private Area area;
 
-    // ✅ Constructor có đủ tham số, bao gồm `status`
 
-    public Apartment(Integer id, String name, String location, ApartmentOwner owner, BigDecimal pricePerDay, BigDecimal pricePerMonth, BigDecimal discountPercent, String description, int maxAdults, int maxChildren, int numRooms, AptStatus status, List<ApartmentImage> images, Area area) {
+    private  Integer max_bed;
+    private float acreage;
+    private String name_apartment;
+
+
+    public Apartment() {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -57,10 +61,9 @@ public class Apartment {
         this.status = status;
         this.images = images;
         this.area = area;
-    }
-
-    public Apartment() {
-        this.status = AptStatus.AVAILABLE; // Mặc định nếu không truyền giá trị
+        this.max_bed = max_bed;
+        this.acreage = acreage;
+        this.name_apartment = name_apartment;
     }
 
     public Integer getId() {
@@ -143,11 +146,11 @@ public class Apartment {
         this.maxChildren = maxChildren;
     }
 
-    public int getNumRooms() {
+    public String getNumRooms() {
         return numRooms;
     }
 
-    public void setNumRooms(int numRooms) {
+    public void setNumRooms(String numRooms) {
         this.numRooms = numRooms;
     }
 
@@ -173,5 +176,29 @@ public class Apartment {
 
     public void setArea(Area area) {
         this.area = area;
+    }
+
+    public Integer getMax_bed() {
+        return max_bed;
+    }
+
+    public void setMax_bed(Integer max_bed) {
+        this.max_bed = max_bed;
+    }
+
+    public float getAcreage() {
+        return acreage;
+    }
+
+    public void setAcreage(float acreage) {
+        this.acreage = acreage;
+    }
+
+    public String getName_apartment() {
+        return name_apartment;
+    }
+
+    public void setName_apartment(String name_apartment) {
+        this.name_apartment = name_apartment;
     }
 }
