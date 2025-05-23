@@ -1,5 +1,9 @@
 package com.anstay.enums;
 
 public enum PaymentMethod {
-    CREDIT_CARD, BANK_TRANSFER, PAYPAL, CASH
+    MOMO,            // Thêm dòng này lên đầu (hoặc ở bất cứ đâu)
+    PAYPAL,
+    BANK_TRANSFER,
+    CASH,
+    CREDIT_CARD
 }

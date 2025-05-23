@@ -2,20 +2,23 @@ package com.anstay.repository;
 
 import com.anstay.entity.Payment;
 import com.anstay.enums.PaymentStatus;
-import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.List;
-
+import java.util.Optional;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
+
     List<Payment> findByUserId(Integer userId);
 
     List<Payment> findByStatus(PaymentStatus status);
+
+    // Thêm dòng này để tìm theo transactionId
+    Optional<Payment> findByTransactionId(String transactionId);
+
     @Query("SELECT SUM(p.amount) FROM Payment p")
     Double getTotalRevenue();
 
@@ -64,7 +67,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     GROUP BY a.area
     """, nativeQuery = true)
     List<Object[]> getRevenueAndOrdersByApartmentArea();
-
 
     @Query(value = "SELECT a.area, SUM(p.amount) " +
             "FROM payments p " +
