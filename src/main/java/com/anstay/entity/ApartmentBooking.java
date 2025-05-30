@@ -1,50 +1,50 @@
-package com.anstay.entity;
+    package com.anstay.entity;
 
-import com.anstay.enums.BookingStatus;
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
+    import com.anstay.enums.BookingStatus;
+    import jakarta.persistence.*;
+    import org.hibernate.annotations.CreationTimestamp;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+    import java.math.BigDecimal;
+    import java.time.LocalDate;
+    import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "apartment_bookings")
-public class ApartmentBooking {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Entity
+    @Table(name = "apartment_bookings")
+    public class ApartmentBooking {
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+        @ManyToOne
+        @JoinColumn(name = "user_id")
+        private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "apartment_id", nullable = false)
-    private Apartment apartment;
+        @ManyToOne
+        @JoinColumn(name = "apartment_id", nullable = false)
+        private Apartment apartment;
 
-    @ManyToOne
-    @JoinColumn(name = "room_id", nullable = false)
-    private Room room;
+        @ManyToOne
+        @JoinColumn(name = "room_id", nullable = false)
+        private Room room;
 
-    private LocalDate checkIn;
-    private LocalDate checkOut;
-    private BigDecimal totalPrice;
+        private LocalDate checkIn;
+        private LocalDate checkOut;
+        private BigDecimal totalPrice;
 
-    @Enumerated(EnumType.STRING)
-    private BookingStatus status = BookingStatus.PENDING;
+        @Enumerated(EnumType.STRING)
+        private BookingStatus status = BookingStatus.PENDING;
 
-    // Guest info
-    private String guestName;
-    private String guestPhone;
-    private String guestEmail;
-    private String guestIdentityNumber;
-    private LocalDate guestBirthday;
-    private String guestNationality;
+        // Guest info
+        private String guestName;
+        private String guestPhone;
+        private String guestEmail;
+        private String guestIdentityNumber;
+        private LocalDate guestBirthday;
+        private String guestNationality;
 
-    @Column(name = "created_at", updatable = false)
-    @org.hibernate.annotations.CreationTimestamp
-    private LocalDateTime createdAt;
+        @Column(name = "created_at", updatable = false)
+        @org.hibernate.annotations.CreationTimestamp
+        private LocalDateTime createdAt;
 
     // Getters, setters, constructors... (bố có thể gen bằng IDE)
 

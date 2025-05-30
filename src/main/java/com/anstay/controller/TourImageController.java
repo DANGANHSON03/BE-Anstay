@@ -5,7 +5,11 @@ import com.anstay.service.TourImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,8 +26,36 @@ public class TourImageController {
         return ResponseEntity.ok(images);
     }
 
-    // 🟢 Thêm ảnh mới
-    @PostMapping
+    // 🟢 Thêm ảnh bằng file upload (upload nhiều ảnh 1 lần)
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<List<TourImageDTO>> uploadTourImages(
+            @RequestParam("images") List<MultipartFile> files,
+            @RequestParam("tour_id") Integer tourId
+    ) throws IOException {
+        String uploadDir = "/home/uploads/";
+        List<TourImageDTO> savedImages = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(uploadDir, fileName);
+            Files.createDirectories(filePath.getParent());
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            String url = "http://localhost:8085/uploads/" + fileName;
+
+            // Tạo đối tượng DTO để lưu DB và trả về FE (tùy thuộc logic service của bạn)
+            TourImageDTO tourImageDTO = new TourImageDTO();
+            tourImageDTO.setTourId(tourId);
+            tourImageDTO.setImageUrl(url);
+            // Nếu có trường khác thì set thêm (isFeatured, ...)
+
+            TourImageDTO savedImage = tourImageService.addTourImage(tourImageDTO);
+            savedImages.add(savedImage);
+        }
+        return ResponseEntity.ok(savedImages);
+    }
+
+    // 🟢 Thêm ảnh bằng DTO (nếu bạn vẫn muốn truyền URL thủ công)
+    @PostMapping(value = "/add-by-url", consumes = "application/json")
     public ResponseEntity<TourImageDTO> addTourImage(@RequestBody TourImageDTO tourImageDTO) {
         TourImageDTO savedImage = tourImageService.addTourImage(tourImageDTO);
         if (savedImage != null) {
@@ -38,6 +70,8 @@ public class TourImageController {
         boolean isDeleted = tourImageService.deleteTourImage(id);
         return isDeleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
+
+    // 🟢 Đánh dấu ảnh nổi bật
     @PatchMapping("/{id}/isFeatured")
     public ResponseEntity<Void> toggleIsFeatured(@PathVariable Integer id) {
         boolean isUpdated = tourImageService.toggleIsFeatured(id);

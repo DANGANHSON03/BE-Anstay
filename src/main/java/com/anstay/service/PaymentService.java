@@ -4,9 +4,12 @@ import com.anstay.dto.CreatePaymentRequest;
 import com.anstay.dto.PaymentDTO;
 import com.anstay.entity.Payment;
 import com.anstay.entity.User;
+import com.anstay.entity.ApartmentBooking;
 import com.anstay.enums.PaymentStatus;
+import com.anstay.enums.BookingStatus;
 import com.anstay.repository.PaymentRepository;
 import com.anstay.repository.UserRepository;
+import com.anstay.repository.ApartmentBookingRepository;
 import com.anstay.util.PaymentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,8 @@ public class PaymentService {
     private PaymentRepository paymentRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ApartmentBookingRepository apartmentBookingRepository;
 
     // ===== TẠO THANH TOÁN MOMO =====
     public String createMomoPayment(CreatePaymentRequest req) {
@@ -118,11 +123,21 @@ public class PaymentService {
         if (optional.isPresent()) {
             Payment payment = optional.get();
             if ("0".equals(resultCode)) {
-                payment.setStatus(PaymentStatus.COMPLETED); // Đúng enum mới
+                payment.setStatus(PaymentStatus.COMPLETED);
+                paymentRepository.save(payment);
+
+                // === Cập nhật trạng thái booking ===
+                Integer bookingId = payment.getBookingId();
+                if (bookingId != null) {
+                    apartmentBookingRepository.findById(bookingId).ifPresent(booking -> {
+                        booking.setStatus(BookingStatus.CONFIRMED); // hoặc BookingStatus.PAID nếu bố thích
+                        apartmentBookingRepository.save(booking);
+                    });
+                }
             } else {
                 payment.setStatus(PaymentStatus.FAILED);
+                paymentRepository.save(payment);
             }
-            paymentRepository.save(payment);
         }
     }
 
