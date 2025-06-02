@@ -2,6 +2,7 @@ package com.anstay.controller;
 
 import com.anstay.dto.ApartmentContactDTO;
 import com.anstay.dto.ApartmentDTO;
+import com.anstay.dto.ApartmentWithRoomsDTO; // <-- THÊM IMPORT NÀY
 import com.anstay.entity.Apartment;
 import com.anstay.enums.Area;
 import com.anstay.repository.ApartmentRepository;
@@ -33,8 +34,6 @@ public class ApartmentController {
     @Autowired
     private EmailService emailService;
 
-
-
     // Lấy tất cả căn hộ
     @GetMapping
     public ResponseEntity<List<ApartmentDTO>> getAllApartments() {
@@ -47,6 +46,7 @@ public class ApartmentController {
         ApartmentDTO apartment = apartmentService.getApartmentById(id);
         return apartment != null ? ResponseEntity.ok(apartment) : ResponseEntity.notFound().build();
     }
+
     @GetMapping("/search")
     public ResponseEntity<List<ApartmentDTO>> searchApartmentsByName(@RequestParam String name) {
         List<ApartmentDTO> result = apartmentService.searchApartmentsByName(name);
@@ -72,7 +72,8 @@ public class ApartmentController {
     public ResponseEntity<Void> deleteApartment(@PathVariable Integer id) {
         return apartmentService.deleteApartment(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
-    // In ApartmentController.java
+
+    // Lấy căn hộ theo area
     @GetMapping("/by-area")
     public ResponseEntity<List<ApartmentDTO>> getApartmentsByArea(@RequestParam Area area) {
         try {
@@ -82,6 +83,8 @@ public class ApartmentController {
             return ResponseEntity.badRequest().body(Collections.emptyList());
         }
     }
+
+    // Gửi email liên hệ căn hộ
     @PostMapping("/{id}/send-email")
     public ResponseEntity<String> sendEmail(@PathVariable Integer id, @RequestBody ApartmentContactDTO emailRequest) {
         try {
@@ -92,7 +95,6 @@ public class ApartmentController {
 
             long numberOfNights = ChronoUnit.DAYS.between(emailRequest.getCheckIn(), emailRequest.getCheckOut());
 
-            // Email template for admin
             String adminEmailContent = String.format("""
         <!DOCTYPE html>
         <html>
@@ -203,7 +205,14 @@ public class ApartmentController {
             return ResponseEntity.internalServerError().body("Failed to send emails: " + e.getMessage());
         }
     }
+
     private String formatPrice(BigDecimal price) {
         return String.format("%,d", price.longValue());
+    }
+
+    // ===== BỔ SUNG ENDPOINT API lấy căn hộ + phòng =====
+    @GetMapping("/with-rooms")
+    public ResponseEntity<List<ApartmentWithRoomsDTO>> getAllApartmentsWithRooms() {
+        return ResponseEntity.ok(apartmentService.getAllApartmentsWithRooms());
     }
 }

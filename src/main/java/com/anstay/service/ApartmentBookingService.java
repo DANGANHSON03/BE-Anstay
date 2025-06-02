@@ -7,11 +7,11 @@ import com.anstay.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 @Service
 public class ApartmentBookingService {
 
@@ -22,12 +22,16 @@ public class ApartmentBookingService {
 
     // Lấy tất cả booking
     public List<ApartmentBookingDTO> getAllBookings() {
-        return bookingRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+        return bookingRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     // Lấy booking theo ID
     public ApartmentBookingDTO getBookingById(Integer id) {
-        return bookingRepository.findById(id).map(this::convertToDTO).orElse(null);
+        return bookingRepository.findById(id)
+                .map(this::convertToDTO)
+                .orElse(null);
     }
 
     // Kiểm tra phòng còn trống trong khoảng ngày
@@ -41,7 +45,6 @@ public class ApartmentBookingService {
 
     // Tạo booking mới (giữ chỗ, HOLD)
     public ApartmentBookingDTO createBooking(ApartmentBookingDTO bookingDTO) {
-        // Bước này FE sẽ gọi luôn khi vào page (auto giữ chỗ)
         if (bookingDTO.getRoomId() == null || bookingDTO.getApartmentId() == null
                 || bookingDTO.getCheckIn() == null || bookingDTO.getCheckOut() == null) {
             throw new IllegalArgumentException("Missing room, apartment, check-in or check-out info.");
@@ -95,6 +98,7 @@ public class ApartmentBookingService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+
     // Cập nhật thông tin booking (nâng cấp lên CONFIRMED, hoặc update info)
     public ApartmentBookingDTO updateBooking(Integer id, ApartmentBookingDTO dto) {
         Optional<ApartmentBooking> bookingOpt = bookingRepository.findById(id);
@@ -138,9 +142,9 @@ public class ApartmentBookingService {
         return false;
     }
 
-    // Chuyển entity sang DTO
+    // Chuyển entity sang DTO (có thêm area, apartmentName)
     private ApartmentBookingDTO convertToDTO(ApartmentBooking booking) {
-        return new ApartmentBookingDTO(
+        ApartmentBookingDTO dto = new ApartmentBookingDTO(
                 booking.getId(),
                 booking.getUser() != null ? booking.getUser().getId() : null,
                 booking.getApartment().getId(),
@@ -156,5 +160,21 @@ public class ApartmentBookingService {
                 booking.getGuestBirthday(),
                 booking.getGuestNationality()
         );
+        // Nếu DTO có field area & apartmentName
+        dto.setArea(booking.getApartment().getArea().name());
+        dto.setApartmentName(booking.getApartment().getName());
+        return dto;
     }
+
+    // ===== BỔ SUNG: Lấy tất cả booking, group theo khu vực (area) =====
+// Chỉ lấy booking status = HOLD, group theo area
+    public Map<String, List<ApartmentBookingDTO>> getAllHoldBookingsGroupedByArea() {
+        List<ApartmentBooking> bookings = bookingRepository.findAllByStatusWithApartment(BookingStatus.HOLD);
+        List<ApartmentBookingDTO> dtos = bookings.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        // Group by area field
+        return dtos.stream().collect(Collectors.groupingBy(ApartmentBookingDTO::getArea));
+    }
+
 }

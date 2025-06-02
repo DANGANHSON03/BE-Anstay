@@ -17,7 +17,7 @@ public class Apartment {
     private String name;
     private String location;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private ApartmentOwner owner;
 
@@ -31,40 +31,28 @@ public class Apartment {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private AptStatus status = AptStatus.AVAILABLE; // Giá trị mặc định
+    private AptStatus status = AptStatus.AVAILABLE;
 
     @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ApartmentImage> images;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "area" ,nullable = false)
+    @Column(name = "area", nullable = false)
     private Area area;
 
+    // ==== BỔ SUNG LIÊN KẾT VỚI PHÒNG ====
+    @OneToMany(mappedBy = "apartment", fetch = FetchType.LAZY)
+    private List<Room> rooms;
 
-    private  Integer max_bed;
+    // ==== CHUẨN HÓA TÊN BIẾN ====
+    private Integer maxBed;
     private float acreage;
-    private String name_apartment;
+    private String nameApartment;
 
+    // ===== Constructor rỗng chuẩn JPA (không gán biến bên trong) =====
+    public Apartment() {}
 
-    public Apartment() {
-        this.id = id;
-        this.name = name;
-        this.location = location;
-        this.owner = owner;
-        this.pricePerDay = pricePerDay;
-        this.pricePerMonth = pricePerMonth;
-        this.discountPercent = discountPercent;
-        this.description = description;
-        this.maxAdults = maxAdults;
-        this.maxChildren = maxChildren;
-        this.numRooms = numRooms;
-        this.status = status;
-        this.images = images;
-        this.area = area;
-        this.max_bed = max_bed;
-        this.acreage = acreage;
-        this.name_apartment = name_apartment;
-    }
+    // ======= GETTER/SETTER (camelCase và giữ lại getter/setter cũ dạng snake_case) =========
 
     public Integer getId() {
         return id;
@@ -178,12 +166,13 @@ public class Apartment {
         this.area = area;
     }
 
-    public Integer getMax_bed() {
-        return max_bed;
+    // ==== GETTER/SETTER mới (chuẩn camelCase) ====
+    public Integer getMaxBed() {
+        return maxBed;
     }
 
-    public void setMax_bed(Integer max_bed) {
-        this.max_bed = max_bed;
+    public void setMaxBed(Integer maxBed) {
+        this.maxBed = maxBed;
     }
 
     public float getAcreage() {
@@ -194,11 +183,34 @@ public class Apartment {
         this.acreage = acreage;
     }
 
-    public String getName_apartment() {
-        return name_apartment;
+    public String getNameApartment() {
+        return nameApartment;
     }
 
+    public void setNameApartment(String nameApartment) {
+        this.nameApartment = nameApartment;
+    }
+
+    // ==== GETTER/SETTER cho rooms ====
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
+    }
+
+    // ======= GETTER/SETTER dạng snake_case vẫn giữ lại =========
+    public Integer getMax_bed() {
+        return maxBed;
+    }
+    public void setMax_bed(Integer max_bed) {
+        this.maxBed = max_bed;
+    }
+    public String getName_apartment() {
+        return nameApartment;
+    }
     public void setName_apartment(String name_apartment) {
-        this.name_apartment = name_apartment;
+        this.nameApartment = name_apartment;
     }
 }

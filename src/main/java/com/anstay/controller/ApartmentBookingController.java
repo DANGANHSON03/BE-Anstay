@@ -47,26 +47,25 @@ public class ApartmentBookingController {
         return ResponseEntity.ok(bookingService.getBookingsByStatus(status));
     }
 
-    // API giữ phòng (booking mới) - trả về message lỗi nếu giữ chỗ thất bại
+    // API giữ phòng (booking mới)
     @PostMapping
     public ResponseEntity<?> createBooking(@RequestBody ApartmentBookingDTO bookingDTO) {
         ApartmentBookingDTO savedBooking = bookingService.createBooking(bookingDTO);
         if (savedBooking != null) {
             return ResponseEntity.ok(savedBooking);
         } else {
-            // Có thể customize message hơn nữa nếu cần
             return ResponseEntity.badRequest().body("Không thể giữ phòng: phòng đã được giữ hoặc thông tin không hợp lệ!");
         }
     }
 
-    // Cập nhật booking (chuyển HOLD sang CONFIRMED, cập nhật info...)
+    // Cập nhật booking
     @PutMapping("/{id}")
     public ResponseEntity<ApartmentBookingDTO> updateBooking(@PathVariable Integer id, @RequestBody ApartmentBookingDTO bookingDTO) {
         ApartmentBookingDTO updatedBooking = bookingService.updateBooking(id, bookingDTO);
         return updatedBooking != null ? ResponseEntity.ok(updatedBooking) : ResponseEntity.notFound().build();
     }
 
-    // Xóa booking (hủy giữ phòng, chỉ dùng với status HOLD)
+    // Xóa booking
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBooking(@PathVariable Integer id) {
         boolean deleted = bookingService.deleteBooking(id);
@@ -87,4 +86,11 @@ public class ApartmentBookingController {
         );
         return ResponseEntity.ok(available);
     }
+
+    // ===== API group by area (QUAN TRỌNG) =====
+    @GetMapping("/by-area")
+    public ResponseEntity<?> getAllHoldBookingsGroupedByArea() {
+        return ResponseEntity.ok(bookingService.getAllHoldBookingsGroupedByArea());
+    }
+
 }

@@ -3,9 +3,12 @@ package com.anstay.service;
 import com.anstay.dto.ApartmentDTO;
 import com.anstay.dto.ApartmentImageDTO;
 import com.anstay.dto.ApartmentOwnerDTO;
+import com.anstay.dto.ApartmentWithRoomsDTO;
+import com.anstay.dto.RoomSimpleDTO;
 import com.anstay.entity.Apartment;
 import com.anstay.entity.ApartmentImage;
 import com.anstay.entity.ApartmentOwner;
+import com.anstay.entity.Room;
 import com.anstay.enums.Area;
 import com.anstay.repository.ApartmentOwnerRepository;
 import com.anstay.repository.ApartmentRepository;
@@ -27,7 +30,9 @@ public class ApartmentService {
 
     // Lấy danh sách tất cả căn hộ
     public List<ApartmentDTO> getAllApartments() {
-        return apartmentRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+        return apartmentRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     // Lấy căn hộ theo ID
@@ -52,8 +57,7 @@ public class ApartmentService {
         apartment.setMaxAdults(dto.getMaxAdults());
         apartment.setMaxChildren(dto.getMaxChildren());
         apartment.setNumRooms(dto.getNumRooms());
-        
-
+        // Nếu muốn set thêm area, max_bed, acreage, name_apartment thì set ở đây!
 
         Apartment savedApartment = apartmentRepository.save(apartment);
         return convertToDTO(savedApartment);
@@ -78,6 +82,7 @@ public class ApartmentService {
             apartment.setMaxChildren(dto.getMaxChildren());
             apartment.setNumRooms(dto.getNumRooms());
             apartment.setStatus(dto.getStatus());
+            // Nếu muốn set thêm area, max_bed, acreage, name_apartment thì set ở đây!
             Apartment updatedApartment = apartmentRepository.save(apartment);
             return convertToDTO(updatedApartment);
         }
@@ -93,9 +98,8 @@ public class ApartmentService {
         return false;
     }
 
-    // Convert Entity to DTO
+    // Convert Entity to DTO (ApartmentDTO)
     private ApartmentDTO convertToDTO(Apartment apartment) {
-        // Chuyển đổi danh sách chủ sở hữu (nếu có nhiều chủ sở hữu, hãy sửa lại kiểu dữ liệu)
         List<ApartmentOwnerDTO> ownerDTOs = List.of(
                 new ApartmentOwnerDTO(
                         apartment.getOwner().getId(),
@@ -106,15 +110,14 @@ public class ApartmentService {
                 )
         );
 
-        // Chuyển đổi danh sách ảnh (fix lỗi lấy danh sách ảnh thay vì chỉ một ảnh)
-        List<ApartmentImageDTO> imageDTOS = apartment.getImages().stream()
+        List<ApartmentImageDTO> imageDTOS = apartment.getImages() != null ? apartment.getImages().stream()
                 .map(image -> new ApartmentImageDTO(
                         image.getId(),
                         apartment.getId(),
                         image.getImageUrl(),
                         image.isFeatured()
                 ))
-                .toList(); // Chuyển về danh sách List
+                .collect(Collectors.toList()) : List.of();
 
         return new ApartmentDTO(
                 apartment.getId(),
@@ -144,10 +147,36 @@ public class ApartmentService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+
     public List<ApartmentDTO> searchApartmentsByName(String name) {
         List<Apartment> apartments = apartmentRepository.findByNameContainingIgnoreCase(name);
-        return apartments.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return apartments.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
+    // ==== HÀM CHUẨN TRẢ DANH SÁCH CĂN HỘ + PHÒNG ====
+    public List<ApartmentWithRoomsDTO> getAllApartmentsWithRooms() {
+        // Chỉ dùng findAll() vì đã gắn @EntityGraph(attributePaths = "rooms") trong Repository
+        List<Apartment> apartments = apartmentRepository.findAll();
+        return apartments.stream()
+                .map(this::convertToApartmentWithRoomsDTO)
+                .collect(Collectors.toList());
+    }
 
+    // ==== HÀM CHUYỂN APARTMENT ENTITY -> DTO (KÈM ROOM) ====
+    private ApartmentWithRoomsDTO convertToApartmentWithRoomsDTO(Apartment apartment) {
+        List<RoomSimpleDTO> roomDTOs = apartment.getRooms() != null
+                ? apartment.getRooms().stream()
+                .map(room -> new RoomSimpleDTO(room.getId(), room.getName()))
+                .collect(Collectors.toList())
+                : List.of();
+
+        return new ApartmentWithRoomsDTO(
+                apartment.getId(),
+                apartment.getName(),
+                apartment.getArea(),
+                roomDTOs
+        );
+    }
 }

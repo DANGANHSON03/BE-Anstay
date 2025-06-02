@@ -36,9 +36,8 @@ public interface ApartmentBookingRepository extends JpaRepository<ApartmentBooki
     SELECT ab FROM ApartmentBooking ab
     WHERE ab.status = com.anstay.enums.BookingStatus.HOLD
       AND ab.createdAt < :expiredTime
-""")
+    """)
     List<ApartmentBooking> findExpiredHoldBookings(@Param("expiredTime") LocalDateTime expiredTime);
-
 
     // Đếm tổng booking (toàn hệ thống)
     @Query("SELECT COUNT(a) FROM ApartmentBooking a")
@@ -47,4 +46,20 @@ public interface ApartmentBookingRepository extends JpaRepository<ApartmentBooki
     // Tổng doanh thu booking
     @Query("SELECT SUM(a.totalPrice) FROM ApartmentBooking a")
     Double getTotalRevenue();
+
+    // ===== BỔ SUNG: Lấy toàn bộ booking JOIN Apartment để lấy thông tin area =====
+    @Query("""
+        SELECT ab FROM ApartmentBooking ab
+        JOIN FETCH ab.apartment a
+    """)
+    List<ApartmentBooking> findAllWithApartment();
+
+    // ===== BỔ SUNG: Lấy toàn bộ booking theo status và JOIN Apartment =====
+    @Query("""
+    SELECT ab FROM ApartmentBooking ab
+    JOIN FETCH ab.apartment a
+    WHERE ab.status = :status
+""")
+    List<ApartmentBooking> findAllByStatusWithApartment(@Param("status") BookingStatus status);
+
 }

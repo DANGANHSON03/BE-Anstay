@@ -9,8 +9,14 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "apartment_id", nullable = false)
+    // === Cũ: trường khóa ngoại, giữ lại cho code cũ ===
+    @Column(name = "apartment_id", nullable = false, insertable = false, updatable = false)
     private Long apartmentId;
+
+    // === Mới: mapping entity, để lấy phòng theo apartment, hoặc apartment theo phòng ===
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "apartment_id", nullable = false)
+    private Apartment apartment;
 
     @Column(nullable = false)
     private String name;
@@ -23,19 +29,10 @@ public class Room {
     private Integer maxChildren;
     private Integer discount;
 
-    public Room() {
-        this.id = id;
-        this.apartmentId = apartmentId;
-        this.name = name;
-        this.description = description;
-        this.capacity = capacity;
-        this.price = price;
-        this.maxRooms = maxRooms;
-        this.maxAdults = maxAdults;
-        this.maxChildren = maxChildren;
-        this.discount = discount;
-    }
+    // ==== Chuẩn JPA: constructor rỗng không gán biến ====
+    public Room() {}
 
+    // ==== GETTER/SETTER GIỮ NGUYÊN ====
     public Long getId() {
         return id;
     }
@@ -45,11 +42,27 @@ public class Room {
     }
 
     public Long getApartmentId() {
+        // Lấy từ entity nếu có
+        if (apartment != null) {
+            return apartment.getId().longValue();
+        }
         return apartmentId;
     }
 
     public void setApartmentId(Long apartmentId) {
         this.apartmentId = apartmentId;
+    }
+
+    // === GETTER/SETTER cho entity Apartment ===
+    public Apartment getApartment() {
+        return apartment;
+    }
+
+    public void setApartment(Apartment apartment) {
+        this.apartment = apartment;
+        if (apartment != null) {
+            this.apartmentId = apartment.getId().longValue();
+        }
     }
 
     public String getName() {
