@@ -2,6 +2,8 @@ package com.anstay.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "rooms")
 public class Room {
@@ -29,6 +31,8 @@ public class Room {
     private Integer maxChildren;
     private Integer discount;
 
+    @Column(name = "created_at")
+    private Date createdAt;
     // ==== Chuẩn JPA: constructor rỗng không gán biến ====
     public Room() {}
 
@@ -127,5 +131,12 @@ public class Room {
 
     public void setDiscount(Integer discount) {
         this.discount = discount;
+    }
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

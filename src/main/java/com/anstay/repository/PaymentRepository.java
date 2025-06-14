@@ -85,4 +85,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
             "AND p.booking_type = 'TOUR' " +
             "GROUP BY t.area", nativeQuery = true)
     List<Object[]> getRevenueByTourArea();
+
+    @Query("SELECT SUM(p.amount) FROM Payment p WHERE p.status = 'PAID'")
+    Long sumAmountForPaidStatus();
 }

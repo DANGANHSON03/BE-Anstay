@@ -46,7 +46,7 @@ public class ApartmentImageController {
             Path filePath = Paths.get(uploadDir, fileName);
             Files.createDirectories(filePath.getParent());
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            String url = "http://localhost:8085/uploads/" + fileName;
+            String url = "https://anstay.com.vn/uploads/" + fileName;
 
             // Tạo DTO lưu vào DB
             ApartmentImageDTO imageDTO = new ApartmentImageDTO();

@@ -5,6 +5,7 @@ import com.anstay.dto.PaymentDTO;
 import com.anstay.entity.Payment;
 import com.anstay.entity.User;
 import com.anstay.entity.ApartmentBooking;
+import com.anstay.enums.PaymentMethod;
 import com.anstay.enums.PaymentStatus;
 import com.anstay.enums.BookingStatus;
 import com.anstay.repository.PaymentRepository;
@@ -200,5 +201,30 @@ public class PaymentService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    public PaymentDTO createCashPayment(CreatePaymentRequest request) {
+        // Build entity từ request, paymentMethod = CASH
+        Payment payment = new Payment();
+        payment.setBookingType(request.getBookingType());
+        payment.setBookingId(request.getBookingId());
+        if (request.getUserId() != null) {
+            userRepository.findById(request.getUserId()).ifPresent(payment::setUser);
+        } else {
+            payment.setUser(null);
+        }
+        payment.setAmount(request.getAmount());
+        payment.setPaymentMethod(PaymentMethod.CASH); // Enum!
+        payment.setStatus(PaymentStatus.PENDING); // hoặc COMPLETED nếu xác nhận luôn
+        payment.setGuestName(request.getGuestName());
+        payment.setGuestPhone(request.getGuestPhone());
+        payment.setGuestEmail(request.getGuestEmail());
+        payment.setGuestIdentityNumber(request.getGuestIdentityNumber());
+        payment.setGuestBirthday(request.getGuestBirthday());
+        payment.setGuestNationality(request.getGuestNationality());
+
+        payment = paymentRepository.save(payment);
+        return PaymentMapper.toDTO(payment);
     }
 }

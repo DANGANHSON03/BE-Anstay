@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "users")
@@ -43,7 +44,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender= Gender.OTHER;
 
-    public User(Integer id, String fullName, String email, String phone, String password, String avatar, String address, Role role, Boolean isVerified, LocalDate dob, Gender gender) {
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+
+    public User(Integer id, String fullName, String email, String phone, String password, String avatar, String address, Role role, Boolean isVerified, LocalDate dob, Gender gender, Date createdAt) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -55,6 +61,7 @@ public class User {
         this.isVerified = isVerified;
         this.dob = dob;
         this.gender = gender;
+        this.createdAt = createdAt != null ? createdAt : new Date(); // Set current date if createdAt is null
     }
 
     public User(UserDTO userDTO) {
@@ -153,5 +160,12 @@ public class User {
 
     public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt != null ? createdAt : new Date(); // Set current date if createdAt is null
     }
 }

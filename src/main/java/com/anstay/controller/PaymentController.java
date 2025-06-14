@@ -19,7 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/payments")
-@CrossOrigin(origins = "http://localhost:5173") // Sửa nếu FE chạy port khác
+@CrossOrigin(origins = "https://anstay.com.vn") // Sửa nếu FE chạy port khác
 public class PaymentController {
 
     @Autowired
@@ -73,5 +73,11 @@ public class PaymentController {
         Payment payment = paymentRepository.findByTransactionId(transactionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy giao dịch!"));
         return ResponseEntity.ok(PaymentMapper.toDTO(payment));
+    }
+
+    @PostMapping("/cash")
+    public ResponseEntity<PaymentDTO> createCashPayment(@RequestBody CreatePaymentRequest request) {
+        PaymentDTO paymentDTO = paymentService.createCashPayment(request);
+        return ResponseEntity.ok(paymentDTO);
     }
 }

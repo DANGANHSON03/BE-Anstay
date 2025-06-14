@@ -62,4 +62,14 @@ public interface ApartmentBookingRepository extends JpaRepository<ApartmentBooki
 """)
     List<ApartmentBooking> findAllByStatusWithApartment(@Param("status") BookingStatus status);
 
+    @Query("SELECT COUNT(ab) FROM ApartmentBooking ab")
+    long countAll();
+
+    // Đếm số đơn hàng thành công (status = 'CONFIRMED')
+    long countByStatus(BookingStatus status);
+
+    // Đếm số đơn hàng bị hủy (CANCELLED) và hết hạn (EXPIRED)
+    @Query("SELECT COUNT(b) FROM ApartmentBooking b WHERE b.status IN :statuses")
+    long countByStatusIn(List<BookingStatus> statuses);
+
 }

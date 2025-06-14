@@ -40,7 +40,7 @@ public class TourImageController {
             Path filePath = Paths.get(uploadDir, fileName);
             Files.createDirectories(filePath.getParent());
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            String url = "http://localhost:8085/uploads/" + fileName;
+            String url = "https://anstay.com.vn/uploads/" + fileName;
 
             // Tạo đối tượng DTO để lưu DB và trả về FE (tùy thuộc logic service của bạn)
             TourImageDTO tourImageDTO = new TourImageDTO();
