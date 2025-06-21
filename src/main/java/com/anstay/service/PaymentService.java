@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
+import java.util.ArrayList;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -185,6 +186,12 @@ public class PaymentService {
     public List<Object[]> getMonthlyRevenueByTourArea() {
         return paymentRepository.getMonthlyRevenueByTourArea();
     }
+    public List<PaymentDTO> getPendingPayments() {
+        return paymentRepository.findPendingPayments()
+                .stream()
+                .map(PaymentMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 
     // ===== TOOL HMAC =====
     private String hmacSHA256(String data, String secretKey) {
@@ -226,5 +233,63 @@ public class PaymentService {
 
         payment = paymentRepository.save(payment);
         return PaymentMapper.toDTO(payment);
+    }
+
+    // Phần đơn hàng ( Chờ Xác nhận )
+    public List<PaymentDTO> getPaymentsWithCheckInOut() {
+        List<Payment> payments = paymentRepository.findPendingPayments();
+
+        List<PaymentDTO> result = new ArrayList<>();
+
+        for (Payment payment : payments) {
+            ApartmentBooking booking = apartmentBookingRepository.findById(payment.getBookingId()).orElse(null);
+
+            PaymentDTO dto = new PaymentDTO();
+            dto.setId(payment.getId());
+            dto.setBookingType(payment.getBookingType());
+            dto.setAmount(payment.getAmount());
+            dto.setStatus(payment.getStatus());
+            dto.setCheckIn(booking != null ? booking.getCheckIn() : null);
+            dto.setCheckOut(booking != null ? booking.getCheckOut() : null);
+
+            dto.setGuestIdentityNumber(payment.getGuestIdentityNumber());
+            dto.setGuestName(payment.getGuestName());
+            dto.setGuestEmail(payment.getGuestEmail());
+            dto.setGuestPhone(payment.getGuestPhone());
+
+            result.add(dto);
+        }
+
+        return result;
+    }
+
+    //===Phần lọc trạng thái đơn hàng ===
+    public List<PaymentDTO> getCompletedPayments() {
+        List<Payment> payments = paymentRepository.findByStatus(PaymentStatus.COMPLETED);
+        List<PaymentDTO> result = new ArrayList<>();
+
+        for (Payment payment : payments) {
+            // Lấy thông tin booking như method getPaymentsWithCheckInOut()
+            ApartmentBooking booking = apartmentBookingRepository.findById(payment.getBookingId()).orElse(null);
+
+            PaymentDTO dto = new PaymentDTO();
+            dto.setId(payment.getId());
+            dto.setBookingType(payment.getBookingType());
+            dto.setAmount(payment.getAmount());
+            dto.setStatus(payment.getStatus());
+
+            // Thêm thông tin checkin/checkout (copy từ method getPaymentsWithCheckInOut)
+            dto.setCheckIn(booking != null ? booking.getCheckIn() : null);
+            dto.setCheckOut(booking != null ? booking.getCheckOut() : null);
+
+            dto.setGuestIdentityNumber(payment.getGuestIdentityNumber());
+            dto.setGuestName(payment.getGuestName());
+            dto.setGuestEmail(payment.getGuestEmail());
+            dto.setGuestPhone(payment.getGuestPhone());
+
+            result.add(dto);
+        }
+
+        return result;
     }
 }

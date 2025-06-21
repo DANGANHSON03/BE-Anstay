@@ -4,6 +4,7 @@ import com.anstay.enums.BookingType;
 import com.anstay.enums.PaymentMethod;
 import com.anstay.enums.PaymentStatus;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class PaymentDTO {
@@ -25,6 +26,13 @@ public class PaymentDTO {
     private String guestIdentityNumber;
     private Date guestBirthday;
     private String guestNationality;
+    private LocalDate checkIn;
+    private LocalDate checkOut;
+
+
+
+
+
 
     // ======= Constructor có đủ trường (bạn tự bổ sung thêm nếu cần) =======
     public PaymentDTO() {}
@@ -63,6 +71,21 @@ public class PaymentDTO {
         this.guestIdentityNumber = guestIdentityNumber;
         this.guestBirthday = guestBirthday;
         this.guestNationality = guestNationality;
+    }
+    public LocalDate getCheckIn() {
+        return checkIn;
+    }
+
+    public void setCheckIn(LocalDate checkIn) {
+        this.checkIn = checkIn;
+    }
+
+    public LocalDate getCheckOut() {
+        return checkOut;
+    }
+
+    public void setCheckOut(LocalDate checkOut) {
+        this.checkOut = checkOut;
     }
 
     public Integer getId() {

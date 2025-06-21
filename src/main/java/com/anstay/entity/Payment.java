@@ -15,6 +15,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+
     // Loại booking: APARTMENT hoặc TOUR
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -119,4 +120,28 @@ public class Payment {
 
     public String getGuestNationality() { return guestNationality; }
     public void setGuestNationality(String guestNationality) { this.guestNationality = guestNationality; }
+
+    public Object getCheckOut() {
+        return null;
+    }
+
+    public Object getCheckIn() {
+        return null;
+    }
+
+    public Object getRoomType() {
+        return null;
+    }
+
+    public Object getCheckInDate() {
+        return null;
+    }
+
+    public Object getCheckOutDate() {
+        return null;
+    }
+
+    public Object getReason() {
+        return null;
+    }
 }

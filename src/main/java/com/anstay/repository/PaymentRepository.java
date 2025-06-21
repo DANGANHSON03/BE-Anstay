@@ -16,7 +16,13 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
     List<Payment> findByStatus(PaymentStatus status);
 
-    // Thêm dòng này để tìm theo transactionId
+    // Tìm theo trạng thái đơn lẻ
+    List<Payment> findByStatus(String status);
+
+    // Tìm theo nhiều trạng thái
+    List<Payment> findByStatusIn(List<PaymentStatus> statuses);
+
+    //Tìm theo transactionId
     Optional<Payment> findByTransactionId(String transactionId);
 
     @Query("SELECT SUM(p.amount) FROM Payment p")
@@ -88,4 +94,19 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
     @Query("SELECT SUM(p.amount) FROM Payment p WHERE p.status = 'PAID'")
     Long sumAmountForPaidStatus();
+
+    @Query("SELECT p FROM Payment p WHERE p.status = com.anstay.enums.PaymentStatus.PENDING")
+    List<Payment> findPendingPayments();
+
+    @Query(value = """
+    SELECT p.id, p.amount, p.status, ab.check_in, ab.check_out
+    FROM payments p
+    JOIN apartment_bookings ab ON p.booking_id = ab.id
+    WHERE p.booking_type = 'APARTMENT'
+    """, nativeQuery = true)
+    List<Object[]> findPaymentsWithCheckInOut();
+
+    List<Payment> findByStatusInOrderByCreatedAtDesc(List<String> statuses);
+
+    List<Payment> findByStatusOrderByCreatedAtDesc(String upperCase);
 }
